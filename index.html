@@ -14,6 +14,7 @@
         <my-sidebar
           :items="menuItems"
           :current="currentPage"
+          :api-menu-items="apiMenuItems"
           @change-page="currentPage = $event"
         ></my-sidebar>
         <main class="main-content">
@@ -91,14 +92,20 @@
               localStorage.setItem(CACHE_TIME_KEY, now.toString());
               menuItems.value = list;
               if (menuItems.value.length > 0) {
+                // 初期表示ページ固定 ( ※ 指定なしなら一番上 )
+                const defaultPage = "README";
+                currentPage.value = menuItems.value.includes(defaultPage)
+                  ? defaultPage
+                  : menuItems.value[0];
                 currentPage.value = menuItems.value[0];
                 fetchMarkdown(currentPage.value);
+                console.log(menuItems);
               }
             } catch (err) {
               console.error("ファイルリストの取得に失敗:", err);
               // 失敗時のフォールバック
-              menuItems.value = ["Home"];
-              currentPage.value = "Home";
+              menuItems.value = ["README"];
+              currentPage.value = "README";
             }
           };
           // --- 4. 監視（ページ名が変わったら中身を再取得） ---
