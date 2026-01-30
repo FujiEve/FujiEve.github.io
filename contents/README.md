@@ -1,4 +1,4 @@
-# FujiEve`s pages
+# README.md
 
 これは **GitHub Pages** 上で動作する Vue 3 製の Wiki です。
 

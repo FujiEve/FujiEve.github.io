@@ -19,7 +19,7 @@
         ></my-sidebar>
         <main class="main-content">
           <h2>{{ currentPage }}</h2>
-          <p>コンテンツがここに入ります。</p>
+          <div class="markdown-body" v-html="renderedContent"></div>
         </main>
       </div>
       <my-footer></my-footer>
@@ -43,13 +43,31 @@
           // --- 2. Markdown取得関数（ファイル名をもらって中身をfetch） ---
           const fetchMarkdown = async (fileName) => {
             if (!fileName) return;
+            const url = `contents/${fileName}.md`;
+            console.log("Fetching Markdown from:", url);
             try {
-              const response = await fetch(`./contents/${fileName}.md`);
-              if (!response.ok) throw new Error("File not found");
-              const text = await response.text();
+              const response = await fetch(url);
+              if (!response.ok)
+                throw new Error(`HTTP error! status: ${response.status}`);
+              let text = await response.text();
+              // --- 画像パスの置換（./images/ を ./contents/images/ に変換） ---
+              text = text.replace(
+                /src="\.\/images\//g,
+                'src="./contents/images/'
+              );
+              text = text.replace(
+                /!\[(.*?)\]\(\.\/images\//g,
+                "![$1](./contents/images/"
+              );
               renderedContent.value = marked.parse(text); // md -> html 変換
             } catch (err) {
-              renderedContent.value = `<p style="color:red;">Error: ${fileName}.md が見つかりません。</p>`;
+              console.error("❌ Fetch error:", err);
+              renderedContent.value = `
+      <div style="color:red; padding:20px; border:1px solid red;">
+        <h3>エラー: ${fileName}.md が読み込めません</h3>
+        <p>URL: <code>${window.location.origin}/${url}</code></p>
+        <p>詳細: ${err.message}</p>
+      </div>`;
             }
           };
           // --- 3. 【新機能】ファイルリスト取得関数 ---
@@ -84,7 +102,7 @@
               if (!response.ok) throw new Error("GitHub API Error");
               const files = await response.json();
               // .md ファイルだけを抽出し、拡張子を除去してメニューにする
-              list = files
+              const list = files
                 .filter((file) => file.name.endsWith(".md"))
                 .map((file) => file.name.replace(".md", ""));
               // 取得成功したらLocalStorageに保存;
