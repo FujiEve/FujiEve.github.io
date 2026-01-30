@@ -1,4 +1,4 @@
-# ようこそ
+# FujiEve`s pages
 
 これは **GitHub Pages** 上で動作する Vue 3 製の Wiki です。
 

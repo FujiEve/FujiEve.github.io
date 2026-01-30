@@ -66,31 +66,47 @@ html {
 }
 
 /* サイドバー */
+/* サイドメニュー全体の基本フォントサイズを少し下げる */
 .main-sidebar {
-  width: 160px;
-  background: #f8f9fa;
-  padding: 15px 10px;
-  border-right: 1px solid #dee2e6;
+  font-size: 0.85rem;
 }
-.nav-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+
+/* カテゴリ見出し（Documents / API Reference） */
+.category-title {
+  font-size: 0.75rem; /* さらに小さくして洗練された印象に */
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px; /* 字間を少し詰める */
+  padding: 8px 12px;
+  margin: 15px 0 5px 0;
+  border-left: 3px solid #ccc;
+  background-color: #f4f4f4;
+  white-space: nowrap; /* 見出し自体の改行を禁止 */
 }
-.nav-item {
-  padding: 10px 12px;
-  font-size: 1.1rem;
+
+/* 各メニュー項目のデザイン */
+.main-sidebar li {
+  padding: 6px 15px; /* 上下のパディングを削って高さを抑える */
   cursor: pointer;
-  border-radius: 4px;
-  transition: 0.2s;
+  transition: background 0.2s;
+  font-size: 0.85rem; /* 項目名も少し小さく */
+  color: #444;
+  line-height: 1.2; /* 行間を詰め気味にする */
+  white-space: nowrap; /* テキストの途中で改行させない */
+  overflow: hidden; /* 万が一長い場合ははみ出しを隠す */
+  text-overflow: ellipsis; /* 長すぎる場合は「...」で省略表示 */
 }
-.nav-item:hover {
-  background: #e9ecef;
+
+.main-sidebar li:hover {
+  background-color: #f0f0f0;
 }
-.nav-item.active {
-  background: #3498db;
-  color: white;
-  font-weight: bold;
+
+.main-sidebar li.active {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  font-weight: 600;
+  border-right: 3px solid #1565c0;
 }
 
 /* メインコンテンツ */
