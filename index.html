@@ -3,67 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue 3 GitHub Pages - Slim</title>
+    <title>Vue 3 Split Components</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Helvetica Neue', Arial, sans-serif; color: #333; }
-        
-        /* ローディングアニメーション */
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; color: #333; }
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; display: flex; justify-content: center; align-items: center;
-            z-index: 9999; transition: opacity 0.4s ease-out;
+            z-index: 9999; transition: opacity 0.4s;
         }
-        .spinner {
-            width: 40px; height: 40px; border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* レイアウト構成 */
+        /* レイアウト */
         .wrapper { display: grid; grid-template-rows: auto 1fr auto; height: 100vh; }
-
-        /* ヘッダー：さらにスッキリ */
-        header { 
-            background: #2c3e50; color: white; 
-            padding: 0.4rem 1rem; 
-            text-align: left; 
-        }
-        header h1 { margin: 0; font-size: 1.1rem; }
-
-        /* コンテナ */
         .container { display: flex; flex: 1; overflow: hidden; }
-
-        /* サイドメニュー：幅を160pxに縮小 */
-        aside { 
-            width: 160px; /* 240pxから短縮 */
-            background: #f8f9fa; 
-            padding: 15px 10px; 
-            border-right: 1px solid #dee2e6; 
-        }
-        aside ul { list-style: none; padding: 0; margin: 0; }
-        aside li { 
-            padding: 10px 12px; 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            transition: all 0.2s;
-            white-space: nowrap; /* 幅が狭いので改行を防ぐ */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        aside li:hover { background: #e9ecef; }
-        aside li.active { background: #3498db; color: white; font-weight: bold; }
-
-        /* メインエリア：余白を広めにとって開放感を出す */
-        main { flex: 1; padding: 40px; overflow-y: auto; background: #ffffff; }
-
-        /* フッター：サイドメニュー（#f8f9fa）とハッキリ分ける */
-        footer { 
-            background: #333; color: #fff; 
-            padding: 6px 20px; text-align: center; font-size: 0.7rem; 
-        }
-
+        main { flex: 1; padding: 40px; overflow-y: auto; background: #fff; }
         [v-cloak] { display: none; }
     </style>
 </head>
@@ -72,47 +26,39 @@
     <div id="loader"><div class="spinner"></div></div>
 
     <div id="app" v-cloak class="wrapper">
-        <header>
-            <h1>{{ siteTitle }}</h1>
-        </header>
+        <my-header :title="siteTitle"></my-header>
 
         <div class="container">
-            <aside>
-                <ul>
-                    <li v-for="item in menuItems" 
-                        :key="item" 
-                        :class="{ active: currentPage === item }"
-                        @click="currentPage = item">
-                        {{ item }}
-                    </li>
-                </ul>
-            </aside>
+            <my-sidebar 
+                :items="menuItems" 
+                :current="currentPage" 
+                @change-page="currentPage = $event">
+            </my-sidebar>
 
             <main>
                 <h2>{{ currentPage }}</h2>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p>ここはメインコンテンツエリアです。</p>
-                <div style="height: 1000px; background: linear-gradient(#fff, #f0f0f0); padding-top: 20px;">
-                    <p>スクロールのテスト用コンテンツです。</p>
-                </div>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <p>ここは <strong>{{ currentPage }}</strong> のコンテンツエリアです。</p>
             </main>
         </div>
 
-        <footer>
-            <p>&copy; 2026 My GitHub Page</p>
-        </footer>
+        <my-footer></my-footer>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <script src="./components/header.js"></script>
+    <script src="./components/sidebar.js"></script>
+    <script src="./components/footer.js"></script>
 
     <script>
         const { createApp, ref, onMounted } = Vue;
 
-        createApp({
+        const app = createApp({
             setup() {
-                const siteTitle = ref("Project Console");
+                const siteTitle = ref("Split Architecture");
                 const currentPage = ref("Home");
-                const menuItems = ref(["Home", "Stats", "Config", "Help"]);
+                const menuItems = ref(["Home", "Projects", "About"]);
 
                 onMounted(() => {
                     setTimeout(() => {
@@ -126,7 +72,14 @@
 
                 return { siteTitle, currentPage, menuItems };
             }
-        }).mount('#app');
+        });
+
+        // 外部ファイルで定義したコンポーネントを登録
+        app.component('my-header', MyHeader);
+        app.component('my-sidebar', MySidebar);
+        app.component('my-footer', MyFooter);
+
+        app.mount('#app');
     </script>
 </body>
 </html>
