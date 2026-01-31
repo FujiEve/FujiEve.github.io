@@ -1,7 +1,4 @@
-# .github.io
+# FujiEve.github.io
 
-公開用ページ
-
-## おまけで API として利用できるらしいので試してみる
-
-sample/index.html
+公開ページ
+https://fujieve.github.io/
